@@ -119,12 +119,11 @@ select distinct Crime.* from Crime join Suspect ON Crime.CrimeID = Suspect.Crime
 where Suspect.Age > (select MAX(Age) from Victim where Victim.CrimeID = Suspect.CrimeID);
 
 -- 16.Find suspects involved in multiple incidents:
-SELECT Name, COUNT(*) AS Incident_Count FROM Suspect
-INNER JOIN Crime ON Suspect.CrimeID = Crime.CrimeID GROUP BY Name HAVING COUNT(*) > 1;
+select Name, count(*) as Incident_Count from Suspect
+inner join Crime on Suspect.CrimeID = Crime.CrimeID group by Name having count(*) > 1;
 
 -- 17. List incidents with no suspects involved.
-SELECT * FROM Crime
-LEFT JOIN Suspect ON Crime.CrimeID = Suspect.CrimeID WHERE Suspect.SuspectID IS NULL;
+select * from Crime left join Suspect on Crime.CrimeID = Suspect.CrimeID where Suspect.SuspectID IS NULL;
 
 -- 18.List all cases where at least one incident is of type 'Homicide' and all other incidents are of type 'Robbery'.
 select c.CrimeID, c.IncidentType, c.IncidentDate, c.Location, c.Description, c.Status
@@ -132,9 +131,8 @@ from Crime c where IncidentType = 'Homicide'
 or (IncidentType = 'Robbery' and not exists (select 1 from Crime c2 where c2.CrimeID = c.CrimeID and c2.IncidentType != 'Robbery'));
 
 -- 19. Retrieve a list of all incidents and the associated suspects, showing suspects for each incident, or 'No Suspect' if there are none.
-SELECT c.CrimeID, c.IncidentType, c.IncidentDate, c.Location, c.Description, c.Status,
-COALESCE(s.Name, 'No Suspect') AS SuspectName FROM Crime c LEFT JOIN Suspect s ON c.CrimeID = s.CrimeID;  
+select c.CrimeID, c.IncidentType, c.IncidentDate, c.Location, c.Description, c.Status,
+COALESCE(s.Name, 'No Suspect') as SuspectName from Crime c left join Suspect s on c.CrimeID = s.CrimeID;  
 
 -- 20.List all suspects who have been involved in incidents with incident types 'Robbery' or 'Assault'
-SELECT DISTINCT s.SuspectID, s.Name
-FROM Suspect s JOIN Crime c ON s.CrimeID = c.CrimeID WHERE c.IncidentType IN ('Robbery', 'Assault');
+select distinct s.SuspectID, s.Name from Suspect s join Crime c on s.CrimeID = c.CrimeID where c.IncidentType in ('Robbery', 'Assault');
